@@ -28,7 +28,7 @@ footer{height:38px;background:#fff;border-top:1px solid #e5e7eb;display:flex;jus
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SB_URL="https://qynlvmelqiuiinfpoogy.supabase.co",SB_KEY="sb_publishable_HIXOkzp9Vbp8tZaHYj0z-g_5xDp3yOt",sb=supabase.createClient(SB_URL,SB_KEY);
+const SB_URL="https://qynlvmelqiiuinfpoogy.supabase.co",SB_KEY="sb_publishable_HIXOkzp9Vbp8tZaHYj0z-g_5xDp3yOt",sb=supabase.createClient(SB_URL,SB_KEY);
 const $=id=>document.getElementById(id),CITY=[64.5393,40.5433];
 const R=[["5843673","Октябрьский"],["5843675","Соломбальский"],["5843671","Маймаксанский"],["5843674","Северный"],["5843669","Исакогорский"],["5843676","Цигломенский"],["5843670","Ломоносовский"],["5843668","Варавино-Фактория"],["5843672","Майская Горка"]];
 const map=L.map("map").setView(CITY,11.5);L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors &copy; CARTO"}).addTo(map);
