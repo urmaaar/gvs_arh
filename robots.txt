@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://urmaaaar.github.io/gvs_arh/sitemap.xml
+Sitemap: https://gvsarh.github.io/sitemap.xml
