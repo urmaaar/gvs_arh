@@ -31,8 +31,6 @@
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}.stat{border:1px solid #e7eaf0;border-radius:12px;padding:10px;text-align:center}.stat b{display:block;font-size:21px}.stat span{font-size:10px;color:#8b95a5}.q{font-size:13px;font-weight:800;margin:18px 0 9px}.votes{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vote{border:0;border-radius:11px;padding:12px 7px;font-weight:900;font-size:12px;cursor:pointer;transition:transform .15s,filter .15s}.vote:hover{transform:translateY(-1px);filter:brightness(.98)}.vote:disabled{opacity:.6}.yes{background:#dcfce7;color:#15803d}.no{background:#fee2e2;color:#b91c1c}.note{min-height:18px;font-size:10px;color:#8b95a5;margin-top:7px}.ch{display:flex;justify-content:space-between;align-items:center;margin:17px 0 9px}.ch h3{font-size:15px;margin:0}.ch span{font-size:10px;color:#98a2b3}.comments{display:flex;flex-direction:column;gap:8px}.comment{background:#f7f9fb;border:1px solid #edf0f3;border-radius:11px;padding:10px}.meta{font-size:10px;color:#98a2b3;margin-bottom:4px}.ct{font-size:12px;line-height:1.45;color:#344054}form{display:grid;gap:8px;margin-top:12px}input,textarea{font:inherit;font-size:12px;border:1px solid #d9dee7;border-radius:10px;padding:10px;outline:none}textarea{min-height:75px;resize:vertical}form button{border:0;border-radius:10px;background:#172033;color:#fff;padding:11px;font-weight:900;cursor:pointer}
 footer{height:38px;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:0 22px;color:#98a2b3;font-size:10px}district-label{background:rgba(255,255,255,.94);border:0!important;border-radius:7px!important;box-shadow:0 2px 8px rgba(15,23,42,.16);padding:3px 6px!important;font-weight:800;font-size:10px;color:#344054}.district-label:before{display:none}
 @media(max-width:850px){body{overflow:auto}.header{height:62px;padding:0 12px}.main{height:auto;display:block}.map{height:56vh}.panel{border-left:0;border-top:1px solid #e5e7eb}.head-right .online{display:none}.site-logo{gap:8px}.logo-mark{width:34px;height:34px;font-size:17px}.logo-text b{font-size:18px}.logo-text small{font-size:9px}footer{height:auto;padding:9px 14px;flex-direction:column;align-items:flex-start;gap:5px}.map-info{left:10px;top:10px}.load{left:10px;bottom:10px}}
-
-.micro-label{background:rgba(255,255,255,.94);border:1px solid #d9dee7;border-radius:6px;padding:2px 5px;box-shadow:0 1px 5px rgba(15,23,42,.14);font:800 9px Arial;color:#344054;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -46,12 +44,12 @@ footer{height:38px;background:#fff;border-top:1px solid #e5e7eb;display:flex;jus
     <button id="city" class="city">⌖ Архангельск</button>
   </div>
 </header>
-<main class="main"><section class="map"><div id="map"></div><div class="map-info"><b>Горячая вода в Архангельске</b><small>Цвет района и микрорайона зависит от большинства голосов</small><div class="legend"><span><i class="dot g"></i>есть</span><span><i class="dot r"></i>нет</span><span><i class="dot n"></i>нет данных</span></div><div style="margin-top:9px;font-size:10px;line-height:1.4;color:#667085">Карта горячей воды в Архангельске: выберите округ, посмотрите голоса жителей и оставьте свою отметку.</div></div><div id="load" class="load">Загружаем границы округов…</div></section>
-<aside class="panel"><div id="empty" class="empty"><div class="icon">♨</div><h2>Выберите округ</h2><p>Нажмите на область карты, чтобы посмотреть текущий статус и сообщения жителей.</p><div class="tip">Голос большинства определяет цвет округа.</div></div>
-<div id="district" class="hidden"><button id="back" class="back">← Все округа</button><div class="title"><div><div class="kicker">ТЕРРИТОРИАЛЬНЫЙ ОКРУГ</div><h1 id="name">—</h1></div><div id="badge" class="badge">НЕТ ДАННЫХ</div></div><div class="stats"><div class="stat"><b id="yc">0</b><span>вода есть</span></div><div class="stat"><b id="nc">0</b><span>воды нет</span></div><div class="stat"><b id="cc">0</b><span>комментариев</span></div></div><div class="q">Как сейчас у вас?</div><div class="votes"><button id="yes" class="vote yes">✓ Вода есть</button><button id="no" class="vote no">✕ Воды нет</button></div><div id="note" class="note"></div><div class="ch"><h3>Комментарии жителей</h3><span>свежие сверху</span></div><div id="comments" class="comments"></div><form id="form"><input id="author" maxlength="40" placeholder="Имя (необязательно)"><textarea id="text" maxlength="500" required placeholder="Напишите, что происходит у вас..."></textarea><button>Опубликовать</button></form></div></aside></main>
+<main class="main"><section class="map"><div id="map"></div><div class="map-info"><b>Горячая вода в Архангельске</b><small>Цвет зоны зависит от большинства голосов</small><div class="legend"><span><i class="dot g"></i>есть</span><span><i class="dot r"></i>нет</span><span><i class="dot n"></i>нет данных</span></div><div style="margin-top:9px;font-size:10px;line-height:1.4;color:#667085">Зоны отключений ТГК-2: выберите участок, посмотрите голоса жителей и оставьте свою отметку.</div><div style="margin-top:8px;font-size:9px;line-height:1.35;color:#98a2b3">Источник геометрии: схема ТГК-2. Даты игнорируются.</div></div><div id="load" class="load">Загружаем зоны теплосетей…</div></section>
+<aside class="panel"><div id="empty" class="empty"><div class="icon">♨</div><h2>Выберите зону</h2><p>Нажмите на зону карты, чтобы посмотреть текущий статус и сообщения жителей.</p><div class="tip">Голос большинства определяет цвет зоны.</div></div>
+<div id="district" class="hidden"><button id="back" class="back">← Все зоны</button><div class="title"><div><div id="kicker" class="kicker">УЧАСТОК ТЕПЛОСЕТИ</div><h1 id="name">—</h1></div><div id="badge" class="badge">НЕТ ДАННЫХ</div></div><div class="stats"><div class="stat"><b id="yc">0</b><span>вода есть</span></div><div class="stat"><b id="nc">0</b><span>воды нет</span></div><div class="stat"><b id="cc">0</b><span>комментариев</span></div></div><div class="q">Как сейчас у вас?</div><div class="votes"><button id="yes" class="vote yes">✓ Вода есть</button><button id="no" class="vote no">✕ Воды нет</button></div><div id="note" class="note"></div><div class="ch"><h3>Комментарии жителей</h3><span>свежие сверху</span></div><div id="comments" class="comments"></div><form id="form"><input id="author" maxlength="40" placeholder="Имя (необязательно)"><textarea id="text" maxlength="500" required placeholder="Напишите, что происходит у вас..."></textarea><button>Опубликовать</button></form></div></aside></main>
 <footer>
   <span>gvs_arh</span>
-  <span>Карта: Яндекс · интерактивные границы округов</span>
+  <span>Карта: Яндекс · зоны теплосетей по схеме ТГК-2</span>
   <a href="https://t.me/gvsarh_bot" target="_blank" rel="noopener" style="color:#172033;text-decoration:none;font-weight:800">
     💬 Поддержка в Telegram: @gvsarh_bot
   </a>
@@ -61,10 +59,11 @@ footer{height:38px;background:#fff;border-top:1px solid #e5e7eb;display:flex;jus
 <script>
 const SB_URL="https://qynlvmelqiiuinfpoogy.supabase.co",SB_KEY="sb_publishable_HIXOkzp9Vbp8tZaHYj0z-g_5xDp3yOt",sb=supabase.createClient(SB_URL,SB_KEY);
 const $=id=>document.getElementById(id),CITY=[64.5393,40.5433];
-const R=[["5843673","Октябрьский"],["5843675","Соломбальский"],["5843671","Маймаксанский"],["5843674","Северный"],["5843669","Исакогорский"],["5843676","Цигломенский"],["5843670","Ломоносовский"],["5843668","Варавино-Фактория"],["5843672","Майская Горка"]];
-let map, polys=[],microPolys=[],chosen=null,data={};
-const OSM_BBOX="64.393877,40.28415,64.788576,40.807638";
-const MICRO_CACHE="gvs_arh_osm_microdistricts_v1";
+const ZONES=[["tgc_nw", "Участок теплосети — северо-запад", "tgc"], ["tgc_ne", "Участок теплосети — северо-восток", "tgc"], ["tgc_sw", "Участок теплосети — юго-запад", "tgc"], ["tgc_cs", "Участок теплосети — центрально-южный", "tgc"], ["tgc_e", "Участок теплосети — восток", "tgc"], ["tgc_se", "Участок теплосети — юго-восток", "tgc"], ["tgc_n", "Участок теплосети — северный", "tgc"], ["district_solombalsky", "Соломбальский", "district"], ["district_severny", "Северный", "district"], ["district_varavino", "Варавино-Фактория", "district"]];
+const TGC_ZONES=[{"id": "tgc_nw", "name": "Участок теплосети — северо-запад", "kind": "tgc", "rings": [[[64.651326, 40.432705], [64.659331, 40.457623], [64.655774, 40.487213], [64.64243, 40.512131], [64.624628, 40.529262], [64.606814, 40.518361], [64.597903, 40.498115], [64.60325, 40.476311], [64.613941, 40.457623], [64.628189, 40.442049]]]}, {"id": "tgc_ne", "name": "Участок теплосети — северо-восток", "kind": "tgc", "rings": [[[64.64243, 40.48877], [64.63353, 40.516803], [64.617504, 40.537049], [64.601467, 40.538607], [64.588988, 40.516803], [64.594337, 40.50123], [64.605032, 40.495], [64.613941, 40.510574], [64.628189, 40.504344]]]}, {"id": "tgc_sw", "name": "Участок теплосети — юго-запад", "kind": "tgc", "rings": [[[64.608596, 40.418689], [64.610378, 40.454508], [64.599685, 40.482541], [64.583639, 40.495], [64.556873, 40.487213], [64.541694, 40.457623], [64.551517, 40.423361], [64.571151, 40.404672], [64.592554, 40.40623]]]}, {"id": "tgc_cs", "name": "Участок теплосети — центрально-южный", "kind": "tgc", "rings": [[[64.594337, 40.476311], [64.587205, 40.50123], [64.572936, 40.515246], [64.549731, 40.510574], [64.537229, 40.491885], [64.547946, 40.468525], [64.564013, 40.476311], [64.57472, 40.463852]]]}, {"id": "tgc_e", "name": "Участок теплосети — восток", "kind": "tgc", "rings": [[[64.580071, 40.519918], [64.581855, 40.572869], [64.567582, 40.635164], [64.530082, 40.622705], [64.530082, 40.551066], [64.544374, 40.516803]]]}, {"id": "tgc_se", "name": "Участок теплосети — юго-восток", "kind": "tgc", "rings": [[[64.564013, 40.635164], [64.556873, 40.67877], [64.512206, 40.675656], [64.526507, 40.635164]]]}, {"id": "tgc_n", "name": "Участок теплосети — северный", "kind": "tgc", "rings": [[[64.67, 40.401557], [64.67, 40.432705], [64.654884, 40.448279], [64.651326, 40.432705], [64.653105, 40.410902]]]}];
+const FULL_DISTRICTS=[['5843675','district_solombalsky','Соломбальский'],['5843674','district_severny','Северный'],['5843668','district_varavino','Варавино-Фактория']];
+let map, polys=[],chosen=null,data={};
+const ZONE_NOTE="Границы центральных зон восстановлены по схеме ТГК-2. Даты с исходной схемы не используются.";
 const CACHE="gvs_arh_osm_boundaries_v3";
 
 function empty(){return{yes:0,no:0,comments:[]}}
@@ -105,10 +104,10 @@ function initYandexMap(){
    suppressMapOpenBlock:true
  });
  map.behaviors.disable("scrollZoom");
- map.events.add("boundschange",setMicroVisibility);
+ map.events.add("boundschange",()=>{});
 }
 
-function add(id,name,rg){
+function add(id,name,rg,kind="tgc"){
  if(!map || !rg || !rg.length) return;
  // Yandex Polygon accepts an array of linear rings. Each coordinate is [lat, lon].
  const p=new ymaps.GeoObject({
@@ -125,7 +124,7 @@ function add(id,name,rg){
    openBalloonOnClick:false,
    openHintOnHover:true
  });
- p.events.add("click",()=>select({id,name},p));
+ p.events.add("click",()=>select({id,name,kind},p));
  p.events.add("mouseenter",()=>p.options.set({...yandexStyle(data[id]||empty()),strokeWidth:3,fillOpacity:.38}));
  p.events.add("mouseleave",()=>p.options.set(yandexStyle(data[id]||empty())));
  map.geoObjects.add(p);
@@ -139,148 +138,11 @@ function add(id,name,rg){
    ),
    hideIconOnBalloonOpen:false
  });
- label.events.add("click",()=>select({id,name},p));
+ label.events.add("click",()=>select({id,name,kind},p));
  map.geoObjects.add(label);
  polys.push({id,p,label});
 }
 
-
-function microColor(d){
-  return yandexStyle(d||empty());
-}
-function stitchSegments(segments){
-  let unused=segments.map(s=>s.slice()).filter(s=>s.length>1), out=[];
-  const same=(a,b)=>Math.abs(a[0]-b[0])<1e-8&&Math.abs(a[1]-b[1])<1e-8;
-  while(unused.length){
-    let ring=unused.pop(), changed=true;
-    while(changed && unused.length){
-      changed=false;
-      const a=ring[0], b=ring[ring.length-1];
-      for(let i=unused.length-1;i>=0;i--){
-        let s=unused[i], sa=s[0], sb=s[s.length-1];
-        if(same(b,sa)){ ring=ring.concat(s.slice(1)); unused.splice(i,1); changed=true; break; }
-        if(same(b,sb)){ ring=ring.concat(s.slice(0,-1).reverse()); unused.splice(i,1); changed=true; break; }
-        if(same(a,sb)){ ring=s.concat(ring.slice(1)); unused.splice(i,1); changed=true; break; }
-        if(same(a,sa)){ ring=s.slice().reverse().concat(ring.slice(1)); unused.splice(i,1); changed=true; break; }
-      }
-    }
-    if(ring.length>3) out.push(ring);
-  }
-  return out;
-}
-function geometryFromOsmElement(e){
-  if(e.type==="way" && e.geometry?.length){
-    return [e.geometry.map(p=>[p.lat,p.lon])];
-  }
-  if(e.type==="relation" && e.members){
-    const outer=e.members.filter(m=>m.type==="way" && (!m.role || m.role==="outer") && m.geometry?.length)
-      .map(m=>m.geometry.map(p=>[p.lat,p.lon]));
-    return stitchSegments(outer);
-  }
-  return [];
-}
-async function fetchMicrodistricts(){
-  let cached=null;
-  try{cached=JSON.parse(localStorage.getItem(MICRO_CACHE)||"null")}catch{}
-  if(cached?.length){renderMicrodistricts(cached);return}
-
-  const q=`[out:json][timeout:40];
-(
-  nwr["boundary"="administrative"]["name"](64.393877,40.28415,64.788576,40.807638);
-  nwr["place"~"^(neighbourhood|suburb|quarter)$"]["name"](64.393877,40.28415,64.788576,40.807638);
-);
-out geom;`;
-  const endpoints=[
-    "https://overpass-api.de/api/interpreter",
-    "https://overpass.kumi.systems/api/interpreter"
-  ];
-  let json=null;
-  for(const ep of endpoints){
-    try{
-      const ctrl=new AbortController(), timer=setTimeout(()=>ctrl.abort(),45000);
-      const r=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:"data="+encodeURIComponent(q),signal:ctrl.signal});
-      clearTimeout(timer);
-      if(r.ok){json=await r.json();break}
-    }catch(e){console.warn("Overpass",ep,e)}
-  }
-  if(!json) throw new Error("Не удалось получить микрорайоны OSM");
-
-  const items=[];
-  const seen=new Set();
-  for(const e of (json.elements||[])){
-    if(!e.tags?.name) continue;
-    const rg=geometryFromOsmElement(e);
-    if(!rg.length) continue;
-    const key=e.type+"_"+e.id;
-    if(seen.has(key)) continue;
-    seen.add(key);
-    // Only objects that actually have polygon geometry are rendered.
-    const isAdmin=e.tags.boundary==="administrative";
-    const type=isAdmin?"Район/территория":"Микрорайон";
-    items.push({osmId:key,name:e.tags["name:ru"]||e.tags.name,type,geometry:rg});
-  }
-  // Prefer polygonal named areas over duplicated objects with identical names.
-  const unique=[], names=new Set();
-  for(const x of items){
-    const n=x.name.trim().toLowerCase();
-    if(names.has(n)) continue;
-    names.add(n); unique.push(x);
-  }
-  try{localStorage.setItem(MICRO_CACHE,JSON.stringify(unique))}catch{}
-  renderMicrodistricts(unique);
-}
-function renderMicrodistricts(items){
-  microPolys.forEach(x=>{try{map.geoObjects.remove(x.p);map.geoObjects.remove(x.label)}catch{}});
-  microPolys=[];
-  items.forEach(x=>{
-    const id="micro_"+x.osmId;
-    if(!data[id]) data[id]=empty();
-    const p=new ymaps.GeoObject({
-      geometry:{type:"Polygon",coordinates:x.geometry},
-      properties:{hintContent:x.name,balloonContentHeader:x.name,balloonContentBody:"Микрорайон: "+x.name}
-    },{
-      ...microColor(data[id]),
-      strokeWidth:2,
-      fillOpacity:.28,
-      cursor:"pointer",
-      zIndex:20
-    });
-    p.events.add("click",()=>selectMicro({id,name:x.name,type:x.type},p));
-    map.geoObjects.add(p);
-
-    const first=x.geometry[0];
-    const center=first.reduce((a,c)=>[a[0]+c[0]/first.length,a[1]+c[1]/first.length],[0,0]);
-    const label=new ymaps.Placemark(center,{iconContent:x.name},{
-      zIndex:30,
-      iconContentLayout:ymaps.templateLayoutFactory.createClass('<div class="micro-label">$[properties.iconContent]</div>')
-    });
-    label.events.add("click",()=>selectMicro({id,name:x.name,type:x.type},p));
-    map.geoObjects.add(label);
-    microPolys.push({id,p,label,name:x.name});
-  });
-  setMicroVisibility();
-}
-function setMicroVisibility(){
-  if(!map)return;
-  const z=map.getZoom();
-  microPolys.forEach(x=>{
-    x.p.options.set("visible",true);
-    x.label.options.set("visible",z>=11.8);
-  });
-}
-async function selectMicro(d,p){
-  chosen=d;
-  $("empty").classList.add("hidden");
-  $("district").classList.remove("hidden");
-  $("name").textContent=d.name;
-  $("note").textContent="";
-  const b=p.geometry.getBounds();
-  if(b) map.setBounds(b,{checkZoomRange:true,zoomMargin:45});
-  render();
-}
-function microColors(){
-  microPolys.forEach(x=>x.p.options.set(microColor(data[x.id]||empty())));
-}
 async function getRelation(id){
  const urls=[
   "https://api.openstreetmap.org/api/0.6/relation/"+id+"/full.json",
@@ -301,38 +163,43 @@ function parseOSM(j){
  return rings(ways)
 }
 async function boundaries(){
- let c=cacheGet();
- if(R.every(x=>c[x[0]])){
-  R.forEach(x=>add(x[0],x[1],c[x[0]]));
-  $("load").textContent="Границы загружены";
-  setTimeout(()=>$("load").classList.add("hidden"),500);
-  return
- }
- let n=0;
- await Promise.all(R.map(async x=>{
-  try{
-   let j=await getRelation(x[0]),rg=parseOSM(j);
-   if(rg.length){c[x[0]]=rg;add(x[0],x[1],rg);n++}
-  }catch(e){console.warn(x[1],e)}
- }));
- if(n){cacheSet(c);$("load").textContent="Границы загружены";setTimeout(()=>$("load").classList.add("hidden"),700)}
- else $("load").textContent="Не удалось получить границы OpenStreetMap. Обновите страницу.";
+  // Central zones are traced from the TGC-2 scheme supplied for this project.
+  TGC_ZONES.forEach(z=>add(z.id,z.name,z.rings,z.kind));
+
+  // Three areas explicitly marked on the TGC-2 scheme as not being split on the map
+  // are represented by their OSM administrative polygons.
+  let c=cacheGet(), loaded=0;
+  await Promise.all(FULL_DISTRICTS.map(async x=>{
+    const [osmId,id,name]=x;
+    try{
+      let rg=c[id];
+      if(!rg){
+        const j=await getRelation(osmId);
+        rg=parseOSM(j);
+        if(rg.length) c[id]=rg;
+      }
+      if(rg&&rg.length){ add(id,name,rg,"district"); loaded++; }
+    }catch(e){ console.warn(name,e); }
+  }));
+  cacheSet(c);
+  $("load").textContent="Зоны теплосетей загружены";
+  setTimeout(()=>$("load").classList.add("hidden"),900);
 }
 async function allData(){
  const [v,c]=await Promise.all([sb.from("votes").select("district_id,status"),sb.from("comments").select("district_id,author,text,created_at").order("created_at",{ascending:false}).limit(1000)]);
- if(v.error)throw v.error;if(c.error)throw c.error;let o={};R.forEach(x=>o[x[0]]=empty());
+ if(v.error)throw v.error;if(c.error)throw c.error;let o={};ZONES.forEach(x=>o[x[0]]=empty());
  (v.data||[]).forEach(x=>{let d=o[x.district_id]||(o[x.district_id]=empty());if(x.status==="yes")d.yes++;if(x.status==="no")d.no++});
  (c.data||[]).forEach(x=>{let d=o[x.district_id]||(o[x.district_id]=empty());d.comments.push({author:x.author,text:x.text,time:new Date(x.created_at).toLocaleString("ru-RU")})});
- Object.keys(data).forEach(k=>{if(!o[k]) o[k]=data[k]});
-data=o;colors();if(chosen)render()
+ data=o;colors();if(chosen)render()
 }
-function colors(){polys.forEach(x=>x.p.options.set(yandexStyle(data[x.id]||empty())));microColors()}
+function colors(){polys.forEach(x=>x.p.options.set(yandexStyle(data[x.id]||empty())))}
 async function select(d,p){
  chosen=d;
  $("empty").classList.add("hidden");
  $("district").classList.remove("hidden");
  $("name").textContent=d.name;
- $("note").textContent="";
+ $("kicker").textContent=d.kind==="district"?"РАЙОН ОТКЛЮЧЕНИЯ":"УЧАСТОК ТЕПЛОСЕТИ";
+ $("note").textContent=ZONE_NOTE;
  const b=p.geometry.getBounds();
  if(b) map.setBounds(b,{checkZoomRange:true,zoomMargin:45});
  render()
@@ -364,17 +231,16 @@ async function vote(v){
  }finally{$("yes").disabled=false;$("no").disabled=false}
 }
 async function comment(e){e.preventDefault();if(!chosen)return;let text=$("text").value.trim();if(!text)return;try{let {error}=await sb.from("comments").insert({district_id:chosen.id,author:$("author").value.trim()||"Житель",text});if(error)throw error;$("text").value="";$("author").value="";$("note").textContent="Комментарий опубликован.";await allData()}catch(e){console.error(e);$("note").textContent="Ошибка публикации комментария."}}
-function home(){chosen=null;$("district").classList.add("hidden");$("empty").classList.remove("hidden");map.setCenter(CITY,11.5);setTimeout(setMicroVisibility,100)}
+function home(){chosen=null;$("district").classList.add("hidden");$("empty").classList.remove("hidden");map.setCenter(CITY,11.5)}
 $("refresh").onclick=e=>{e.preventDefault();location.reload()};$("city").onclick=home;$("back").onclick=home;$("yes").onclick=()=>vote("yes");$("no").onclick=()=>vote("no");$("form").onsubmit=comment;
 ymaps.ready(async()=>{
  try{
    initYandexMap();
    await boundaries();
    await allData();
-   fetchMicrodistricts().catch(e=>{console.warn(e);$("load").textContent="Крупные округа загружены; микрорайоны OSM пока недоступны.";});
  }catch(e){
    console.error(e);
-   $("load").textContent="Ошибка подключения карты. Обновите страницу.";
+   $("load").textContent="Ошибка подключения карты или зон. Обновите страницу.";
  }
  setInterval(()=>allData().catch(console.error),10000);
 });
