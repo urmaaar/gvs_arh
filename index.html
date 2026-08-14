@@ -1,82 +1,90 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>gvs_arh — Горячая вода в Архангельске</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>gvs_arh — Горячая вода Архангельска</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <div class="logo">gvs_arh</div>
-      <div class="subtitle">Горячая вода в Архангельске</div>
-    </div>
-    <div class="legend">
-      <span><i class="dot green"></i> есть</span>
-      <span><i class="dot red"></i> нет</span>
-      <span><i class="dot gray"></i> нет данных</span>
-    </div>
-  </header>
+<header class="header">
+  <div class="brand">
+    <div class="brand-name">gvs_arh</div>
+    <div class="brand-sub">Горячая вода · Архангельск</div>
+  </div>
+  <div class="header-right">
+    <div class="live"><span></span> Онлайн</div>
+    <button id="cityBtn" class="city-btn">⌖ Архангельск</button>
+  </div>
+</header>
 
-  <main class="layout">
-    <section class="map-wrap">
-      <div id="map"></div>
-      <div class="map-hint">📍 <strong>Архангельск</strong> · нажмите на район</div>
-    </section>
+<main class="app">
+  <section class="map-area">
+    <div id="map"></div>
+    <div class="map-card">
+      <div class="map-card-title">Где сейчас есть горячая вода?</div>
+      <div class="map-card-sub">Выберите территориальный округ</div>
+      <div class="map-legend">
+        <span><i class="l green"></i> вода есть</span>
+        <span><i class="l red"></i> воды нет</span>
+        <span><i class="l gray"></i> нет данных</span>
+      </div>
+    </div>
+  </section>
 
-    <aside class="panel">
-      <div id="emptyState" class="empty-state">
-        <div class="big-icon">♨</div>
-        <h2>Выберите район</h2>
-        <p>Нажмите на область карты, чтобы увидеть состояние горячей воды и отметки жителей.</p>
+  <aside class="side">
+    <div id="empty" class="empty">
+      <div class="empty-icon">♨</div>
+      <h2>Выберите округ</h2>
+      <p>Нажмите на цветную область карты, чтобы посмотреть отметки жителей.</p>
+      <div class="tip">💡 Чем больше свежих отметок, тем точнее статус.</div>
+    </div>
+
+    <div id="district" class="district hidden">
+      <button id="back" class="back">← Все округа</button>
+      <div class="title-row">
+        <div>
+          <div class="kicker">ТЕРРИТОРИАЛЬНЫЙ ОКРУГ</div>
+          <h1 id="name">—</h1>
+        </div>
+        <div id="badge" class="badge">Нет данных</div>
       </div>
 
-      <div id="districtState" class="hidden">
-        <button id="backBtn" class="back">← Все районы</button>
-        <div class="district-head">
-          <div>
-            <div class="eyebrow">РАЙОН</div>
-            <h1 id="districtName">—</h1>
-          </div>
-          <div id="statusBadge" class="status-badge">—</div>
-        </div>
-
-        <div class="stats">
-          <div class="stat"><strong id="yesCount">0</strong><span>вода есть</span></div>
-          <div class="stat"><strong id="noCount">0</strong><span>воды нет</span></div>
-          <div class="stat"><strong id="commentCount">0</strong><span>комментариев</span></div>
-        </div>
-
-        <div class="vote-title">Как сейчас?</div>
-        <div class="vote-row">
-          <button id="yesBtn" class="vote yes">✓ Вода есть</button>
-          <button id="noBtn" class="vote no">✕ Воды нет</button>
-        </div>
-        <div id="voteNote" class="note"></div>
-
-        <div class="comments-head">
-          <h3>Комментарии</h3>
-          <span>демо-режим</span>
-        </div>
-        <div id="comments" class="comments"></div>
-
-        <form id="commentForm" class="comment-form">
-          <input id="commentAuthor" maxlength="40" placeholder="Ваше имя (необязательно)">
-          <textarea id="commentText" maxlength="500" required placeholder="Например: воды нет с 8:30"></textarea>
-          <button type="submit">Добавить комментарий</button>
-        </form>
+      <div class="stats">
+        <div><b id="yes">0</b><span>есть</span></div>
+        <div><b id="no">0</b><span>нет</span></div>
+        <div><b id="commentsCount">0</b><span>отзывов</span></div>
       </div>
-    </aside>
-  </main>
 
-  <footer>
-    <span>gvs_arh · независимый сервис отметок жителей</span>
-    <span>Данные могут быть неточными — проверяйте официальные уведомления.</span>
-  </footer>
+      <div class="question">Как сейчас у вас?</div>
+      <div class="votes">
+        <button id="yesBtn" class="vote vote-yes">✓ Вода есть</button>
+        <button id="noBtn" class="vote vote-no">✕ Воды нет</button>
+      </div>
+      <div id="note" class="note"></div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="app.js"></script>
+      <div class="comments-title">
+        <h3>Комментарии жителей</h3>
+        <span>свежие сверху</span>
+      </div>
+      <div id="comments" class="comments"></div>
+
+      <form id="form">
+        <input id="author" maxlength="40" placeholder="Имя (необязательно)">
+        <textarea id="text" maxlength="500" required placeholder="Напишите, что происходит у вас..."></textarea>
+        <button>Опубликовать</button>
+      </form>
+    </div>
+  </aside>
+</main>
+
+<footer>
+  <span>gvs_arh</span>
+  <span>Независимый сервис отметок жителей · проверяйте официальные уведомления</span>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
