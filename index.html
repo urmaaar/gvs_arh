@@ -163,27 +163,27 @@ function parseOSM(j){
  return rings(ways)
 }
 async function boundaries(){
-  // Central zones are traced from the TGC-2 scheme supplied for this project.
-  TGC_ZONES.forEach(z=>add(z.id,z.name,z.rings,z.kind));
+  let c=cacheGet();
+  // The central zones are traced from the TGC-2 annual scheme supplied for this site.
+  // Dates from that scheme are deliberately not stored or displayed.
+  TGC.forEach(([id,rg])=>{
+    if(!data[id]) data[id]=empty();
+    add(id,R.find(x=>x[0]===id)?.[1]||id,[rg]);
+  });
 
-  // Three areas explicitly marked on the TGC-2 scheme as not being split on the map
-  // are represented by their OSM administrative polygons.
-  let c=cacheGet(), loaded=0;
-  await Promise.all(FULL_DISTRICTS.map(async x=>{
-    const [osmId,id,name]=x;
+  // These three areas are explicitly shown by TGC-2 as whole areas not split on the central scheme.
+  for(const [id,name] of [["5843675","Соломбальский"],["5843674","Северный"],["5843668","Варавино-Фактория"]]){
     try{
-      let rg=c[id];
-      if(!rg){
-        const j=await getRelation(osmId);
-        rg=parseOSM(j);
-        if(rg.length) c[id]=rg;
+      if(!c[id]){
+        let j=await getRelation(id),rg=parseOSM(j);
+        if(rg.length)c[id]=rg;
       }
-      if(rg&&rg.length){ add(id,name,rg,"district"); loaded++; }
-    }catch(e){ console.warn(name,e); }
-  }));
+      if(c[id]) add(id,name,c[id]);
+    }catch(e){console.warn(name,e)}
+  }
   cacheSet(c);
   $("load").textContent="Зоны теплосетей загружены";
-  setTimeout(()=>$("load").classList.add("hidden"),900);
+  setTimeout(()=>$("load").classList.add("hidden"),700);
 }
 async function allData(){
  const [v,c]=await Promise.all([sb.from("votes").select("district_id,status"),sb.from("comments").select("district_id,author,text,created_at").order("created_at",{ascending:false}).limit(1000)]);
