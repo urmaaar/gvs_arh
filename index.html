@@ -26,6 +26,7 @@ footer{height:38px;background:#fff;border-top:1px solid #e5e7eb;display:flex;jus
 <footer><span>gvs_arh</span><span>Границы: OpenStreetMap · подложка: OpenStreetMap/CARTO</span></footer>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+const $=id=>document.getElementById(id);
 const CITY=[64.5393,40.5433];
 const RELS=[
  {id:5843673,name:"Октябрьский"},
@@ -80,37 +81,35 @@ function relationRings(el){
   });
   return {outer:joinWays(groups.outer),inner:joinWays(groups.inner)};
 }
-async function loadRelation(r){
-  const q=`[out:json][timeout:25];relation(${r.id});out geom;`;
-  const url="https://overpass-api.de/api/interpreter?data="+encodeURIComponent(q);
-  const res=await fetch(url);
-  if(!res.ok) throw new Error("Overpass "+res.status);
-  const json=await res.json();
-  const rel=json.elements.find(e=>e.type==="relation");
-  if(!rel) throw new Error("relation not found");
-  return relationRings(rel);
-}
-async function addDistrict(r){
-  const geo=await loadRelation(r);
-  const rings=[...geo.outer];
-  if(!rings.length) throw new Error("no outer rings");
-  const d={id:String(r.id),name:r.name};
-  const l=L.polygon(rings,style(d)).addTo(map);
-  l.bindTooltip(d.name,{permanent:true,direction:"center",className:"district-label"});
-  l.on("click",()=>select(d,l));
-  l.on("mouseover",()=>l.setStyle({...style(d),weight:3,fillOpacity:.34}));
-  l.on("mouseout",()=>l.setStyle(style(d)));
-  layers.push({d,l});
-}
 async function loadAllDistricts(){
-  let ok=0;
-  for(const r of RELS){
-    try{await addDistrict(r);ok++;$("load").textContent=`Загружено округов: ${ok} из ${RELS.length}`}
-    catch(e){console.warn(r.name,e)}
+  const ids=RELS.map(r=>r.id).join(",");
+  const q=`[out:json][timeout:60];relation(id:${ids});out geom;`;
+  const url="https://overpass-api.de/api/interpreter?data="+encodeURIComponent(q);
+  try{
+    const res=await fetch(url);
+    if(!res.ok) throw new Error("Overpass "+res.status);
+    const json=await res.json();
+    let ok=0;
+    for(const r of RELS){
+      const rel=json.elements.find(e=>e.type==="relation" && String(e.id)===String(r.id));
+      if(!rel) continue;
+      const geo=relationRings(rel);
+      if(!geo.outer.length) continue;
+      const d={id:String(r.id),name:r.name};
+      const l=L.polygon(geo.outer,style(d)).addTo(map);
+      l.bindTooltip(d.name,{permanent:true,direction:"center",className:"district-label"});
+      l.on("click",()=>select(d,l));
+      l.on("mouseover",()=>l.setStyle({...style(d),weight:3,fillOpacity:.34}));
+      l.on("mouseout",()=>l.setStyle(style(d)));
+      layers.push({d,l});
+      ok++;
+    }
+    $("load").textContent=ok===RELS.length?"Границы округов загружены":"Загружено округов: "+ok+" из "+RELS.length;
+    setTimeout(()=>$("load").classList.add("hidden"),1600);
+  }catch(e){
+    console.error(e);
+    $("load").textContent="Не удалось загрузить границы. Нажмите обновить страницу.";
   }
-  $("load").textContent=ok===RELS.length?"Точные границы округов загружены":"Часть границ не загрузилась. Обновите страницу.";
-  setTimeout(()=>{$("load").classList.add("hidden")},2200);
-  if(layers.length){const group=L.featureGroup(layers.map(x=>x.layer));map.fitBounds(group.getBounds(),{padding:[30,30]});map.setView(CITY,11.4)}
 }
 function select(d,l){selected=d;$("empty").classList.add("hidden");$("district").classList.remove("hidden");$("name").textContent=d.name;$("note").textContent="";map.fitBounds(l.getBounds(),{padding:[60,60],maxZoom:13});render()}
 function render(){let d=dat(selected.id),s=st(d);$("badge").className="badge "+s[0];$("badge").textContent=s[1];$("yesCount").textContent=d.yes;$("noCount").textContent=d.no;$("commentCount").textContent=d.comments.length;$("comments").innerHTML=d.comments.length?d.comments.slice().reverse().map(c=>'<div class="comment"><div class="meta">'+esc(c.author||"Житель")+" · "+esc(c.time||"")+'</div><div class="ct">'+esc(c.text)+'</div></div>').join(""):'<div class="comment"><div class="ct">Пока нет комментариев. Будьте первым.</div></div>'}
