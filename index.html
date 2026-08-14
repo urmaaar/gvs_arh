@@ -9,13 +9,15 @@
 </head>
 <body>
 <header class="header">
-  <div class="brand">
-    <div class="brand-name">gvs_arh</div>
-    <div class="brand-sub">Горячая вода · Архангельск</div>
+  <div class="brand-wrap">
+    <a id="refreshBrand" class="brand-refresh" href="#" title="Обновить сайт">arh_gvs</a>
+    <div class="brand">
+      <div class="brand-name">gvs_arh</div>
+      <div class="brand-sub">Горячая вода · Архангельск</div>
+    </div>
   </div>
   <div class="head-right">
     <div class="online"><i></i>Онлайн</div>
-    <button id="refreshBrand" class="brand-refresh" title="Обновить сайт">arh_gvs</button>
     <button class="city" id="city">⌖ Архангельск</button>
   </div>
 </header>
@@ -25,7 +27,7 @@
   <div id="map"></div>
   <div class="map-info">
     <b>Горячая вода в Архангельске</b>
-    <small>Статус округа определяется по голосам жителей</small>
+    <small>Цвет округа зависит от большинства голосов</small>
     <div class="legend">
       <span><i class="dot g"></i>есть</span>
       <span><i class="dot r"></i>нет</span>
@@ -82,6 +84,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
