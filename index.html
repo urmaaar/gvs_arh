@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>gvs_arh — горячая вода в Архангельске</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:Inter,Arial,sans-serif;color:#172033;background:#f5f7fa}
+body{overflow:hidden}
+.header{height:68px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:relative;z-index:2000}
+.logo{font-size:24px;font-weight:900;letter-spacing:-1px}.sub{font-size:11px;color:#8b95a5;margin-top:3px}
+.head-right{display:flex;gap:10px;align-items:center}.online{font-size:12px;color:#667085}.online i{display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:50%;margin-right:5px}
+.city{border:1px solid #dfe4ea;background:#fff;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer;color:#344054}
+.main{height:calc(100vh - 106px);display:grid;grid-template-columns:minmax(0,1fr) 390px}
+.map{position:relative;min-width:0}.map #map{height:100%;width:100%}
+.map-info{position:absolute;left:18px;top:18px;z-index:1000;background:rgba(255,255,255,.96);border:1px solid #e5e7eb;border-radius:14px;padding:13px 15px;box-shadow:0 8px 30px rgba(15,23,42,.12)}
+.map-info b{font-size:14px}.map-info small{display:block;color:#8b95a5;font-size:11px;margin-top:3px}
+.legend{display:flex;gap:12px;margin-top:10px;font-size:10px;color:#667085}.legend span{display:flex;align-items:center;gap:4px}.dot{width:8px;height:8px;border-radius:50%}.g{background:#22c55e}.r{background:#ef4444}.n{background:#94a3b8}
+.panel{background:#fff;border-left:1px solid #e5e7eb;padding:25px;overflow:auto}.empty{text-align:center;padding:80px 15px}.icon{font-size:45px;color:#667085}.empty h2{font-size:21px;margin:12px 0 8px}.empty p{font-size:13px;line-height:1.55;color:#7b8494}.tip{margin-top:22px;background:#f7f8fa;padding:11px;border-radius:10px;font-size:11px;color:#667085}
+.hidden{display:none}.back{border:0;background:none;color:#667085;padding:0;margin-bottom:18px;cursor:pointer}.kicker{font-size:9px;letter-spacing:1px;font-weight:900;color:#98a2b3}.title{display:flex;justify-content:space-between;gap:10px}.title h1{font-size:26px;margin:5px 0 0}.badge{padding:8px 10px;border-radius:999px;background:#eef1f4;color:#667085;font-size:10px;font-weight:900;height:max-content}.badge.ok{background:#dcfce7;color:#15803d}.badge.bad{background:#fee2e2;color:#b91c1c}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}.stat{border:1px solid #e7eaf0;border-radius:12px;padding:10px;text-align:center}.stat b{display:block;font-size:21px}.stat span{font-size:10px;color:#8b95a5}
+.q{font-size:13px;font-weight:800;margin:18px 0 9px}.votes{display:grid;grid-template-columns:1fr 1fr;gap:8px}.vote{border:0;border-radius:11px;padding:12px 7px;font-weight:900;font-size:12px;cursor:pointer}.yes{background:#dcfce7;color:#15803d}.no{background:#fee2e2;color:#b91c1c}.note{min-height:18px;font-size:10px;color:#8b95a5;margin-top:7px}
+.ch{display:flex;justify-content:space-between;align-items:center;margin:17px 0 9px}.ch h3{font-size:15px;margin:0}.ch span{font-size:10px;color:#98a2b3}.comments{display:flex;flex-direction:column;gap:8px}.comment{background:#f7f9fb;border:1px solid #edf0f3;border-radius:11px;padding:10px}.meta{font-size:10px;color:#98a2b3;margin-bottom:4px}.ct{font-size:12px;line-height:1.45;color:#344054}
+form{display:grid;gap:8px;margin-top:12px}input,textarea{font:inherit;font-size:12px;border:1px solid #d9dee7;border-radius:10px;padding:10px;outline:none}textarea{min-height:75px;resize:vertical}form button{border:0;border-radius:10px;background:#172033;color:#fff;padding:11px;font-weight:900;cursor:pointer}
+footer{height:38px;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center;padding:0 22px;color:#98a2b3;font-size:10px}
+.leaflet-control-attribution{font-size:9px!important}.district-label{background:rgba(255,255,255,.94);border:0!important;border-radius:7px!important;box-shadow:0 2px 8px rgba(15,23,42,.16);padding:3px 6px!important;font-weight:800;font-size:10px;color:#344054}.district-label:before{display:none}
+@media(max-width:850px){body{overflow:auto}.header{height:62px}.main{height:auto;display:block}.map{height:58vh}.panel{border-left:0;border-top:1px solid #e5e7eb}.head-right .online{display:none}footer{height:auto;padding:9px 14px;flex-direction:column;align-items:flex-start;gap:4px}.map-info{left:10px;top:10px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div><div class="logo">gvs_arh</div><div class="sub">Горячая вода · Архангельск</div></div>
+  <div class="head-right"><div class="online"><i></i>Онлайн</div><button class="city" id="city">⌖ Архангельск</button></div>
+</header>
+
+<main class="main">
+<section class="map">
+  <div id="map"></div>
+  <div class="map-info"><b>Горячая вода в Архангельске</b><small>Нажмите на округ, чтобы открыть его статус</small>
+    <div class="legend"><span><i class="dot g"></i>есть</span><span><i class="dot r"></i>нет</span><span><i class="dot n"></i>нет данных</span></div>
+  </div>
+</section>
+<aside class="panel">
+  <div id="empty" class="empty"><div class="icon">♨</div><h2>Выберите округ</h2><p>Нажмите на область карты, чтобы посмотреть отметки жителей.</p><div class="tip">💡 Чем больше свежих отметок, тем точнее статус.</div></div>
+  <div id="district" class="hidden">
+    <button id="back" class="back">← Все округа</button>
+    <div class="title"><div><div class="kicker">ТЕРРИТОРИАЛЬНЫЙ ОКРУГ</div><h1 id="name">—</h1></div><div id="badge" class="badge">НЕТ ДАННЫХ</div></div>
+    <div class="stats"><div class="stat"><b id="yesCount">0</b><span>вода есть</span></div><div class="stat"><b id="noCount">0</b><span>воды нет</span></div><div class="stat"><b id="commentCount">0</b><span>комментариев</span></div></div>
+    <div class="q">Как сейчас у вас?</div><div class="votes"><button id="yesBtn" class="vote yes">✓ Вода есть</button><button id="noBtn" class="vote no">✕ Воды нет</button></div><div id="note" class="note"></div>
+    <div class="ch"><h3>Комментарии жителей</h3><span>свежие сверху</span></div><div id="comments" class="comments"></div>
+    <form id="form"><input id="author" maxlength="40" placeholder="Имя (необязательно)"><textarea id="text" maxlength="500" required placeholder="Напишите, что происходит у вас..."></textarea><button>Опубликовать</button></form>
+  </div>
+</aside>
+</main>
+<footer><span>gvs_arh</span><span>Независимый сервис отметок жителей · проверяйте официальные уведомления</span></footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const $=id=>document.getElementById(id), CITY=[64.5393,40.5433];
+const D=[
+["Северный",[[64.585,40.48],[64.63,40.50],[64.65,40.61],[64.62,40.68],[64.56,40.66],[64.54,40.60],[64.585,40.48]]],
+["Соломбальский",[[64.56,40.48],[64.61,40.47],[64.63,40.54],[64.62,40.61],[64.57,40.60],[64.54,40.55],[64.56,40.48]]],
+["Маймаксанский",[[64.62,40.47],[64.72,40.48],[64.77,40.57],[64.72,40.65],[64.64,40.64],[64.62,40.61],[64.62,40.47]]],
+["Октябрьский",[[64.54,40.46],[64.56,40.50],[64.55,40.56],[64.52,40.59],[64.48,40.55],[64.47,40.49],[64.54,40.46]]],
+["Ломоносовский",[[64.55,40.56],[64.57,40.60],[64.55,40.65],[64.50,40.66],[64.47,40.61],[64.48,40.55],[64.52,40.59],[64.55,40.56]]],
+["Майская Горка",[[64.47,40.61],[64.50,40.66],[64.55,40.65],[64.55,40.71],[64.49,40.73],[64.44,40.68],[64.43,40.62],[64.47,40.61]]],
+["Варавино-Фактория",[[64.43,40.62],[64.44,40.68],[64.49,40.73],[64.48,40.78],[64.40,40.77],[64.36,40.69],[64.38,40.62],[64.43,40.62]]],
+["Исакогорский",[[64.43,40.62],[64.38,40.62],[64.35,40.56],[64.38,40.48],[64.45,40.47],[64.47,40.49],[64.48,40.55],[64.43,40.62]]],
+["Цигломенский",[[64.36,40.69],[64.38,40.62],[64.40,40.77],[64.35,40.83],[64.28,40.79],[64.27,40.70],[64.36,40.69]]]
+];
+const map=L.map("map").setView(CITY,11.5);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors &copy; CARTO"}).addTo(map);
+let selected=null,layers=[];
+function db(){try{return JSON.parse(localStorage.getItem("gvs_arh_data")||"{}")}catch{return {}}}
+function put(x){localStorage.setItem("gvs_arh_data",JSON.stringify(x))}
+function dat(id){return db()[id]||{yes:0,no:0,comments:[]}}
+function st(d){return d.yes>d.no&&d.yes?["ok","ВОДА ЕСТЬ","#22c55e"]:d.no>d.yes&&d.no?["bad","ВОДЫ НЕТ","#ef4444"]:["","НЕТ ДАННЫХ","#94a3b8"]}
+function sty(d){let s=st(dat(d.id))[2];return{color:s,weight:2,fillColor:s,fillOpacity:.23}}
+function esc(x){return String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+D.forEach((x,i)=>{let d={id:"d"+i,name:x[0],coords:x[1]},l=L.polygon(x[1],sty(d)).addTo(map);l.bindTooltip(d.name,{permanent:true,direction:"center",className:"district-label"});l.on("click",()=>select(d,l));l.on("mouseover",()=>l.setStyle({...sty(d),weight:3,fillOpacity:.34}));l.on("mouseout",()=>l.setStyle(sty(d)));layers.push({d,l})});
+function refresh(){layers.forEach(x=>x.l.setStyle(sty(x.d)))}
+function select(d,l){selected=d;$("empty").classList.add("hidden");$("district").classList.remove("hidden");$("name").textContent=d.name;map.fitBounds(l.getBounds(),{padding:[60,60],maxZoom:13});render()}
+function render(){let d=dat(selected.id),s=st(d);$("badge").className="badge "+s[0];$("badge").textContent=s[1];$("yesCount").textContent=d.yes;$("noCount").textContent=d.no;$("commentCount").textContent=d.comments.length;$("comments").innerHTML=d.comments.length?d.comments.slice().reverse().map(c=>'<div class="comment"><div class="meta">'+esc(c.author||"Житель")+" · "+esc(c.time||"")+'</div><div class="ct">'+esc(c.text)+"</div></div>").join(""):'<div class="comment"><div class="ct">Пока нет комментариев. Будьте первым.</div></div>'}
+function vote(t){let x=db(),d=x[selected.id]||{yes:0,no:0,comments:[]};d[t]++;x[selected.id]=d;put(x);$("note").textContent="Отметка сохранена. Спасибо!";render();refresh()}
+$("yesBtn").onclick=()=>vote("yes");$("noBtn").onclick=()=>vote("no");
+$("form").onsubmit=e=>{e.preventDefault();let text=$("text").value.trim();if(!text)return;let x=db(),d=x[selected.id]||{yes:0,no:0,comments:[]};d.comments.push({author:$("author").value.trim()||"Житель",text,time:new Date().toLocaleString("ru-RU")});x[selected.id]=d;put(x);$("text").value="";$("author").value="";render()};
+function home(){selected=null;$("district").classList.add("hidden");$("empty").classList.remove("hidden");map.setView(CITY,11.5)}
+$("back").onclick=home;$("city").onclick=home;
+</script>
+</body>
+</html>
