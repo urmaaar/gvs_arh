@@ -34,11 +34,11 @@ footer{height:38px;background:#fff;border-top:1px solid #e5e7eb;display:flex;jus
     <button id="city" class="city">⌖ Архангельск</button>
   </div>
 </header>
-<main class="main"><section class="map"><div id="map"></div><div class="map-info"><b>Горячая вода в Архангельске</b><small>Цвет округа зависит от большинства голосов</small><div class="legend"><span><i class="dot g"></i>есть</span><span><i class="dot r"></i>нет</span><span><i class="dot n"></i>нет данных</span></div></div><div id="load" class="load">Загружаем точные границы…</div></section>
+<main class="main"><section class="map"><div id="map"></div><div class="map-info"><b>Горячая вода в Архангельске</b><small>Цвет округа зависит от большинства голосов</small><div class="legend"><span><i class="dot g"></i>есть</span><span><i class="dot r"></i>нет</span><span><i class="dot n"></i>нет данных</span></div></div><div id="load" class="load">Загружаем границы округов…</div></section>
 <aside class="panel"><div id="empty" class="empty"><div class="icon">♨</div><h2>Выберите округ</h2><p>Нажмите на область карты, чтобы посмотреть текущий статус и сообщения жителей.</p><div class="tip">Голос большинства определяет цвет округа.</div></div>
 <div id="district" class="hidden"><button id="back" class="back">← Все округа</button><div class="title"><div><div class="kicker">ТЕРРИТОРИАЛЬНЫЙ ОКРУГ</div><h1 id="name">—</h1></div><div id="badge" class="badge">НЕТ ДАННЫХ</div></div><div class="stats"><div class="stat"><b id="yc">0</b><span>вода есть</span></div><div class="stat"><b id="nc">0</b><span>воды нет</span></div><div class="stat"><b id="cc">0</b><span>комментариев</span></div></div><div class="q">Как сейчас у вас?</div><div class="votes"><button id="yes" class="vote yes">✓ Вода есть</button><button id="no" class="vote no">✕ Воды нет</button></div><div id="note" class="note"></div><div class="ch"><h3>Комментарии жителей</h3><span>свежие сверху</span></div><div id="comments" class="comments"></div><form id="form"><input id="author" maxlength="40" placeholder="Имя (необязательно)"><textarea id="text" maxlength="500" required placeholder="Напишите, что происходит у вас..."></textarea><button>Опубликовать</button></form></div></aside></main>
-<footer><span>gvs_arh</span><span>Границы: OpenStreetMap · карта: Яндекс</span></footer>
-<script src="https://api-maps.yandex.ru/2.1/?apikey=ca5c01c1-4c4d-4f9a-8aa4-6df4b5e0bde4&lang=ru_RU&load=Map,GeoObject,Polygon,Placemark"></script>
+<footer><span>gvs_arh</span><span>Карта: Яндекс · интерактивные границы округов</span></footer>
+<script src="https://api-maps.yandex.ru/2.1/?apikey=ca5c01c1-4c4d-4f9a-8aa4-6df4b5e0bde4&lang=ru_RU"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SB_URL="https://qynlvmelqiiuinfpoogy.supabase.co",SB_KEY="sb_publishable_HIXOkzp9Vbp8tZaHYj0z-g_5xDp3yOt",sb=supabase.createClient(SB_URL,SB_KEY);
@@ -79,7 +79,7 @@ function cacheSet(x){try{localStorage.setItem(CACHE,JSON.stringify(x))}catch{}}
 function initYandexMap(){
  map=new ymaps.Map("map",{
    center:CITY,
-   zoom:11,
+   zoom:11.5,
    controls:["zoomControl"]
  },{
    suppressMapOpenBlock:true
@@ -91,14 +91,19 @@ function initYandexMap(){
 function add(id,name,rg){
  if(!map || !rg || !rg.length) return;
  // Yandex Polygon accepts an array of linear rings. Each coordinate is [lat, lon].
- const p=new ymaps.Polygon(rg,{
-   hintContent:name,
-   balloonContentHeader:name,
-   balloonContentBody:"Нажмите, чтобы открыть состояние горячей воды"
+ const p=new ymaps.GeoObject({
+   geometry:{type:"Polygon",coordinates:rg},
+   properties:{
+     hintContent:name,
+     balloonContentHeader:name,
+     balloonContentBody:"Нажмите, чтобы открыть состояние горячей воды"
+   }
  },{
    ...yandexStyle(data[id]||empty()),
    interactivityModel:"default#transparent",
-   cursor:"pointer"
+   cursor:"pointer",
+   openBalloonOnClick:false,
+   openHintOnHover:true
  });
  p.events.add("click",()=>select({id,name},p));
  p.events.add("mouseenter",()=>p.options.set({...yandexStyle(data[id]||empty()),strokeWidth:3,fillOpacity:.38}));
@@ -201,7 +206,7 @@ async function vote(v){
  }finally{$("yes").disabled=false;$("no").disabled=false}
 }
 async function comment(e){e.preventDefault();if(!chosen)return;let text=$("text").value.trim();if(!text)return;try{let {error}=await sb.from("comments").insert({district_id:chosen.id,author:$("author").value.trim()||"Житель",text});if(error)throw error;$("text").value="";$("author").value="";$("note").textContent="Комментарий опубликован.";await allData()}catch(e){console.error(e);$("note").textContent="Ошибка публикации комментария."}}
-function home(){chosen=null;$("district").classList.add("hidden");$("empty").classList.remove("hidden");map.setCenter(CITY,11)}
+function home(){chosen=null;$("district").classList.add("hidden");$("empty").classList.remove("hidden");map.setCenter(CITY,11.5)}
 $("refresh").onclick=e=>{e.preventDefault();location.reload()};$("city").onclick=home;$("back").onclick=home;$("yes").onclick=()=>vote("yes");$("no").onclick=()=>vote("no");$("form").onsubmit=comment;
 ymaps.ready(async()=>{
  try{
